@@ -75,13 +75,13 @@ const flappyBird = {
     posX: 10,
     posY: 50,
     gravidade: 0.25,
-    velocidade:0,
+    velocidade: 0,
 
     atualiza() {
         flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
         flappyBird.posY = flappyBird.posY + flappyBird.velocidade;
     },
-    desenha() { 
+    desenha() {
         contexto.drawImage(
             sprites,
             flappyBird.spriteX, flappyBird.spriteY, // Sprite X e Y /
@@ -92,13 +92,79 @@ const flappyBird = {
     }
 }
 
-function loop() {
-    flappyBird.atualiza();
-    planoDeFundo.desenha();
-    flappyBird.desenha();
-    chao.desenha();
+/// mensagemGetReady
 
+const mensagemGetReady = {
+    spriteX: 134,
+    spriteY: 0,
+    largura: 174,
+    altura: 152,
+    posX: (canvas.width / 2) - 174 / 2,
+    posY: 50,
+    desenha() {
+        contexto.drawImage(
+            sprites,
+            mensagemGetReady.spriteX, mensagemGetReady.spriteY,
+            mensagemGetReady.largura, mensagemGetReady.altura,
+            mensagemGetReady.posX, mensagemGetReady.posY,
+            mensagemGetReady.largura, mensagemGetReady.altura,
+
+        )
+    }
+}
+
+
+//TELAS//
+
+const Telas = {
+    INICIO: {
+        desenha() {
+            planoDeFundo.desenha();
+            chao.desenha();
+            flappyBird.desenha();
+            mensagemGetReady.desenha();
+
+        },
+        click() {
+            mudaParaTela(Telas.JOGO);
+
+        },
+        atualiza() {
+
+        }
+
+    }
+};
+
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+    telaAtiva = novaTela;
+};
+
+
+Telas.JOGO = {
+    desenha() {
+        planoDeFundo.desenha();
+        chao.desenha();
+        flappyBird.desenha();
+    },
+    atualiza() {
+        flappyBird.atualiza();
+    }
+
+};
+
+function loop() {
+    telaAtiva.desenha();
+    telaAtiva.atualiza();
     requestAnimationFrame(loop);
 }
+window.addEventListener("click", function () {
+    if (telaAtiva.click) {
+        telaAtiva.click();
+    }
+});
+
+mudaParaTela(Telas.INICIO);
 
 loop();
